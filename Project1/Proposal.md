@@ -71,17 +71,32 @@ unexplored yet, and we want to apply different visualization technique to delive
 
 ### Q2. How do external environmental factors, such as on-site weather conditions would influence country & individual performance outcomes, and do these effects vary across participants from different geographical regions?"
 - Variables involved:
-  - `edition`, `year`, `country`, `city`
+  - `edition`, `year`, `country`, `city`, `All Contestants`, `Female Contestant`, `Male Contestants`, `Start Date`, `End Date`
 
 - External dataset:
-  - We will create a temperature data of hosted countries and participant's country by using Open source [Weather API](https://open-meteo.com/).
+  - We will use the [OpenMetéo Weather API](https://open-meteo.com/), to obtain the historical weather data based on the location of city. We denote this dataset as ED_weather.
+  - (2) We will use the data from [simplemaps.com](https://simplemaps.com) to obtain the location (latitude and longtitude) of the given city. We denote this dataset as ED_location.
 
 - Plan to analyze:
-  - External dataset collection: 
-  - Aggregation: 
-  - Preprocessing: 
-  - Visualiztion: 
-  - Insight: 
+  - Handling external dataset: We first use the ED_location dataset to get the locations, then maps each city in the IMO dataset. Then we use API calls to get weather dataset for each given city.
+
+  - Preprocessing
+    - Data Cleaning: Ensure that the temperature data is complete, with no missing values. If there are missing values, apply interpolation or fill them using the average temperature of the respective day or nearby days. Adjust temperature readings for differences in measurement units if necessary Merging Data: Merge the weather data with the contest dataset (i.e., edition, year, country, and number of contestants).
+
+    - Participant Grouping: Group participants based on their home country (to evaluate if participants from warmer or colder regions perform differently when the contest is held in a specific climate).
+
+    - Aggregation: Aggregate the temperature data to calculate the average daily temperature for each day in the contest period (across all days from start date to end date). Calculate the average temperature across all participating countries for the days of the contest. Compare the temperatures between the host city and the contestants' home countries to identify potential influences of local weather.
+
+  - Visualization
+
+    - Plot the daily average temperatures for both the host city and each participant’s home country during the contest period. This will give a visual sense of how weather conditions evolved throughout the contest.
+
+    - Create heatmaps or scatter plots to compare the temperatures of the host city against each participating country. This visualization can reveal any correlation between the temperature difference and participant performance.
+
+    - Visualize the relationship between the performance of each country and the temperature at the time of the contest. This can be done using scatter plots or box plots to see if there’s any significant pattern.
+
+    - Create bar charts that break down performance based on geographical regions, comparing countries with extreme temperature conditions to those with moderate climates.
+
 
 ---
 ## Team Members:
