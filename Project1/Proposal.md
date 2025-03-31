@@ -15,13 +15,7 @@ There are three key data files:
 - `team_size_all` (integer): Participating contestants
 - `team_size_male` (integer): Male contestants
 - `team_size_female` (integer): Female contestants
-- `p1` (integer): Score on problem 1
-- `p2` (integer): Score on problem 2
-- `p3` (integer): Score on problem 3
-- `p4` (integer): Score on problem 4
-- `p5` (integer): Score on problem 5
-- `p6` (integer): Score on problem 6
-- `p7` (integer): Score on problem 7
+- `p1` - `p7` (integer): Score on problem 1 - 7
 - `awards_gold` (integer): Number of gold medals
 - `awards_silver` (integer): Number of silver medals
 - `awards_bronze` (integer): Number of bronze medals
@@ -33,12 +27,7 @@ There are three key data files:
 - `year` (integer): Year of IMO
 - `contestant` (character): Participant's name
 - `country` (character): Participant's country
-- `p1` (integer): Score on problem 1
-- `p2` (integer): Score on problem 2
-- `p3` (integer): Score on problem 3
-- `p4` (integer): Score on problem 4
-- `p5` (integer): Score on problem 5
-- `p6` (integer): Score on problem 6
+- `p1` - `p6` (integer): Score on problem 1 - 6
 - `total` (integer): Total score on all problems
 - `individual_rank` (integer): Individual rank
 - `award` (character): Award won
@@ -60,15 +49,25 @@ We're interested in finding new insights about how both internal and the externa
 which is IMO score/ranking in this context. We believe that there might have some interesting relationships that have been 
 unexplored yet, and we want to apply different visualization technique to deliver our exploration. 
 
+---
 
 ## 2. Proposed Questions
 ### RQ 1. How variations of the aggregated country-level metadata influence country's performance and its shiftness over time?
 - Variables involved:
   - `year`, `country`, `team_size_female`, `team_size_all`, `awards_gold`, `awards_silver`, `awards_bronze`
 
-- Plan:
-  - We aim to use different internal variablese, e.g., team size, proportion of 1st-time participants & returned veterans, gender distribution, etc. to explore any significant correlation to the performance result. 
-
+- Plan to analyze:
+  - Handle missing values:
+    - If `team_size_female` is missing, it will be inferred as `team_size_female = team_size_all - team_size_male`.
+  - Aggregation: 
+    - Compute  the **country performance** using a weighted sum of awards: `country_performance = 3 * awards_gold + 2 * awards_silver + awards_bronze`. 
+  - Data Visualiztion: 
+    - Female Participation Over Time: **A line chart** displaying the number of female participants (y-axis) across years (x-axis).
+    - Country Performance Trends: **An interactive bar chart** showing performance scores over time, allowing users to select specific countries.
+  - Insight: 
+    - Examine the trends in female participation.
+    - Identify countries with significant shifts in performance over time.
+    - Analyze whether increased female participation correlates with higher performance.
 
 ### Q2. How do external environmental factors, such as on-site weather conditions would influence country & individual performance outcomes, and do these effects vary across participants from different geographical regions?"
 - Variables involved:
@@ -77,12 +76,14 @@ unexplored yet, and we want to apply different visualization technique to delive
 - External dataset:
   - We will create a temperature data of hosted countries and participant's country by using Open source [Weather API](https://open-meteo.com/).
 
-- Plan:
-  -  we aim to use external weather dataset (up-to-date, crawled by ourselves), 
-extracting date-specific-location-specific temperature/humidity to explore the relationship 
-between 
+- Plan to analyze:
+  - External dataset collection: 
+  - Aggregation: 
+  - Preprocessing: 
+  - Visualiztion: 
+  - Insight: 
 
-
-
-
-
+---
+## Team Members:
+- Pham Quoc Cuong
+- Phan Minh Tri
