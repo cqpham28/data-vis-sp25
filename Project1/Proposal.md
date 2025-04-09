@@ -2,7 +2,7 @@
 
 ## 1. Dataset
 ### 1.1 Description 
-**"International Mathematical Olympiad (IMO) Data** is a publicly available dataset recored the World Championship Mathematics Competition for High School students from 1954 to 2024. The IMO is held annually in a different country and is taken part in over 100 countries from 5 continents. The competition consists of 6 problems and is held over two consecutive days with 3 problems each.
+**International Mathematical Olympiad (IMO) Data** is a publicly available dataset recored the World Championship Mathematics Competition for High School students from 1954 to 2024. The IMO is held annually in a different country and is taken part in over 100 countries from 5 continents. The competition consists of 6 problems and is held over two consecutive days with 3 problems each.
 
 There are three key data files:
 - `country_results_df.csv`: Aggregated country-level performance data, including team size and medal counts.
