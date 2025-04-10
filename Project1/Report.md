@@ -170,11 +170,122 @@ In terms of performance, our analysis of the top 10 countries reveals that 6 out
 Overall, the analysis does not show any negative correlation between female participation and national performance. If anything, nations that include more female contestants appear equally or more competitive. This supports the argument for promoting female participation as both a moral imperative and a competitive advantage.
 
 ## Question 2
+### **How on-site temperature affect host country performance?**
+
 ### Introduction
+As diving in this, we see that while the host country often have advantages—such as familiarity with environment, time zone, and reduced travel fatigue—other external factors, such as climate conditions, may also play a role in influencing participant performance. Among these, temperature is a particularly interesting variable.  For the host country, whose students are accustomed to local conditions but may also carry the pressure of performing well, this becomes even more relevant. Hence, we aims to explore the relationship between on-site average temperature during the competition period and the performance of the host country’s team, providing insights into whether environmental conditions contribute to performance fluctuations across different years.
+
 
 ### Approach
+**An interactive visualization exploring the relationship between host country performance and average temperature at IMO locations**
+
+1. First, we use **OpenMeteo Weather API** to get the day-specific temperature given the city location. The code is as follows:
+```python
+def fetch_weather_data(city, lat, lon, start_date, end_date):
+    """
+    Function to fetch weather data for each city based on lat and lon
+    """
+    # API endpoint
+    url = (
+        f"https://archive-api.open-meteo.com/v1/era5?"
+        f"latitude={lat}&longitude={lon}&"
+        f"start_date={start_date}&end_date={end_date}&"
+        f"hourly=temperature_2m&timezone=UTC"
+    )
+    
+    # Send GET request
+    response = requests.get(url)
+    
+    # If the request is successful
+    if response.status_code == 200:
+        json_data = response.json()
+
+        # Extract time and temperature data
+        times = json_data['hourly']['time']
+        temperatures = json_data['hourly']['temperature_2m']
+
+        # Create DataFrame for this city
+        df_city = pd.DataFrame({
+            "city": city,
+            "datetime": times,
+            "temperature_2m": temperatures,
+        })
+
+        return df_city
+    else:
+        print(f"Failed to fetch data for {city}. Status code: {response.status_code}")
+        return None
+```
+2. Then, we use another source - **simplemaps.com** to get the location (latitude and longitude) of the given city. 
+```python
+def get_location_cities():
+    df_world_cities = pd.read_csv("../external_data/simplemaps_worldcities_basicv1.77/worldcities.csv")
+    df = st.session_state.data['timeline'].copy()\
+            .merge(
+                df_world_cities[['city', 'country', 'lat', 'lng']], 
+                on=['city', 'country'], 
+                how='left'
+            )
+    
+    df.dropna(inplace=True)
+    df = df.drop_duplicates(subset=['country', 'city'], keep='first')
+    return df
+```
+
+
+3. We build Streamlit-based platform for interactive visualization
+![](assets/interactive.jpg)
+
 
 ### Analysis
+- We first save a database for all of the available location in the IMO dataset. Then we're able to retrieve  the location and day-specific temperature of the host city.​
+
+```python
+df = get_location_cities()
+for _, row in df.iterrows():
+    st.write(">>>Fechting: ", row['year'], row['city'])
+    df.loc[_,'avg_temperature'] =  get_temperature(row)
+df.to_csv("refs/df_timeline_temperature.csv")
+```
+
+- Also, we need to align city & country name across all datasets.
+
+```python
+def standardize_name(df):
+    # Mapping dictionaries for countries and cities
+    country_mapping = {
+        "Russian Federation": "Russia",
+        "United States of America": "United States",
+        "Republic of Korea": "Korea, South",
+        "Türkiye": "Turkey",
+        "People's Republic of China": "China",
+        "Czechoslovakia": "Czechia",
+        "German Democratic Republic": "Germany",
+        "Union of Soviet Socialist Republics": "Russia",
+    }
+
+    city_mapping = {
+        "A distributed IMO administered from St Petersburg": "Saint Petersburg",
+        "Taejon": "Daejeon",
+        "Havanna": "Havana",
+        "Taipeh": "Taipei",
+    }
+
+    # Apply the mappings to standardize names
+    if 'country' in df.columns:
+        df['country'] = df['country'].replace(country_mapping)
+    if 'city' in df.columns:
+        df['city'] = df['city'].replace(city_mapping)
+    return df
+```
+
+- Calculate average temperature across IMO event days.
+- Cleaning: remove all entries with none/missing values
+- Scatter Plot:​ Plot the hostcountry's scoring result & the onsite-average temperature, (using all the year that the country participated)
+
+
+
+
 
 ### Discussion
 
