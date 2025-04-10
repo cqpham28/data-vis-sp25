@@ -283,11 +283,11 @@ def standardize_name(df):
 - Cleaning: remove all entries with none/missing values
 - Scatter Plot:​ Plot the hostcountry's scoring result & the onsite-average temperature, (using all the year that the country participated)
 
+## Discussion
+- For example, this interactive visualization explores the relationship between the on-site average temperature and the performance of the Netherlands in the IMO across different years. Each blue dot on the scatter plot represents the country's performance in a specific year, plotted against the average temperature of the host location during the competition. The green dot highlights the year when the Netherlands hosted the IMO (2011, in Amsterdam), indicating its own performance as host. 
 
+From the plot, we observe a slight negative correlation between temperature and performance, as illustrated by the downward-sloping red regression line. This suggests that higher temperatures may be slightly associated with lower performance results, though the trend appears weak and scattered. The regression line’s shaded area also indicates a wide confidence interval, reinforcing that the relationship may not be statistically strong.
 
+In 2011, when the Netherlands was the host, its performance was slightly above its average, placing the green marker noticeably higher than the regression line. This could imply a modest “home advantage” effect, where familiar conditions and local environment contributed positively to the team's result—even if the temperature was not particularly low or high that year.
 
-
-### Discussion
-
-
-## Conclusion
+Overall, while temperature may have some influence, performance appears to be more significantly impacted by other factors, such as student preparation, team selection, and problem difficulty. The host year result supports the idea that non-climatic local advantages could play a more notable role.
