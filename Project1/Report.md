@@ -280,14 +280,81 @@ def standardize_name(df):
 ```
 
 - Calculate average temperature across IMO event days.
-- Cleaning: remove all entries with none/missing values
+
+```python
+def aggregate():
+    """Function to aggreate data"""
+    df_country = st.session_state.data['country']
+    df = st.session_state.data['df']
+
+    df_all = []
+    for selected_year in df['year'].unique():
+        df_host = df[df['year'] == selected_year]
+
+        df_host_result = df_country[df_country['country']==df_host['country'].values[0]]
+        df_host_result['performance_sum'] = df_host_result.iloc[:, 5:11].sum(axis=1)
+        df_host_result = df_host_result.merge(
+            df[['year', 'avg_temperature']], 
+                on=['year'], 
+                how='left'
+        )
+        df_host_result_clean = df_host_result[(df_host_result['performance_sum'] != 0) \
+                        & (df_host_result['avg_temperature'].notna())]
+        df_all.append(df_host_result_clean)
+
+
+    df_all = pd.concat(df_all, axis=0)
+    return df_all
+
+```
+
 - Scatter Plot:​ Plot the hostcountry's scoring result & the onsite-average temperature, (using all the year that the country participated)
+
+```python
+df_all = aggregate()
+country = df_host['country'].values[0]
+year = df_host['year'].values[0]
+df_all = df_all[df_all['country'] == country]
+
+df_all_spot = df_all[df_all['year'] == year]
+
+# # Scatter plot with Seaborn for color mapping
+fig, ax = plt.subplots(figsize=(8,6))
+st.title("Scatter Plot with Regression Line and Correlation")
+
+# Plot regression line and scatter points using seaborn
+sns.regplot(
+    x="avg_temperature", 
+    y="performance_sum", 
+    data=df_all, 
+    scatter_kws={'s': 100}, 
+    ax=ax, 
+    color="blue", 
+    line_kws={"color": "red"}
+)
+ax.scatter(
+    df_all_spot['avg_temperature'], 
+    df_all_spot['performance_sum'], 
+    color="green", 
+    s=300, 
+    label=f"host at {year}"
+)
+# CONFIG
+ax.set_title(f"Results of Country: [{country}]", fontsize=16)
+ax.set_xlabel("Average Temperature of the attending location (°C)", fontsize=12)
+ax.set_ylabel("Country Performance Results", fontsize=12)
+ax.legend()
+ax.grid(True)
+ax.set_xlim(0, 35)
+ax.set_ylim(0, 400)
+
+# Display plot
+st.pyplot(fig)
+
+```
 
 ## Discussion
 - For example, this interactive visualization explores the relationship between the on-site average temperature and the performance of the Netherlands in the IMO across different years. Each blue dot on the scatter plot represents the country's performance in a specific year, plotted against the average temperature of the host location during the competition. The green dot highlights the year when the Netherlands hosted the IMO (2011, in Amsterdam), indicating its own performance as host. 
+- From the plot, we observe a slight negative correlation between temperature and performance, as illustrated by the downward-sloping red regression line. This suggests that higher temperatures may be slightly associated with lower performance results, though the trend appears weak and scattered. The regression line’s shaded area also indicates a wide confidence interval, reinforcing that the relationship may not be statistically strong. In 2011, when the Netherlands was the host, its performance was slightly above its average, placing the green marker noticeably higher than the regression line. This could imply a modest “home advantage” effect, where familiar conditions and local environment contributed positively to the team's result—even if the temperature was not particularly low or high that year
 
-From the plot, we observe a slight negative correlation between temperature and performance, as illustrated by the downward-sloping red regression line. This suggests that higher temperatures may be slightly associated with lower performance results, though the trend appears weak and scattered. The regression line’s shaded area also indicates a wide confidence interval, reinforcing that the relationship may not be statistically strong.
-
-In 2011, when the Netherlands was the host, its performance was slightly above its average, placing the green marker noticeably higher than the regression line. This could imply a modest “home advantage” effect, where familiar conditions and local environment contributed positively to the team's result—even if the temperature was not particularly low or high that year.
-
-Overall, while temperature may have some influence, performance appears to be more significantly impacted by other factors, such as student preparation, team selection, and problem difficulty. The host year result supports the idea that non-climatic local advantages could play a more notable role.
+- Overall, while temperature may have some influence, performance appears to be more significantly impacted by other factors, such as student preparation, team selection, and problem difficulty. The host year result supports the idea that non-climatic local advantages could play a more notable role.
